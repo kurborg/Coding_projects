@@ -20,7 +20,7 @@ void display(const vector<char>& board);
 char winner(const vector<char>& board);
 bool legalMove(const vector<char>& board, int move);
 int userMove(const vector<char>& board, char user);
-int compMove(const vector<char>& board, char comp);
+int compMove(const vector<char> board, char comp);
 void displayWinner(char winner, char comp, char user);
 
 int main()
@@ -161,12 +161,69 @@ int userMove(const vector<char>& board, char user);
   return move;
 }
 
-int compMove(const vector<char>& board, char comp);
+int compMove(const vector<char> board, char comp);
 {
+  unsigned int move = 0;
+  bool found = false;
+  
+///////////////////////////////////////////  
+  //SEE IF COMPUTER COULD WIN
+  while(!found && move < board.size())
+  {
+    if (legalMove(board, move))
+    {
+      board[move] = comp;
+      found = winner(board)==computer;
+      board[move] = empty;
+    }
 
-
-
-
+      ++move;
+  }
+    
+///////////////////////////////////////////
+    
+   //SEE IF HUMAN COULD WIN & BLOCK THEM
+   if(!found)
+   {
+     move = 0;
+     char human = opponentTurn(comp);
+     
+      while(!found && move < board.size())
+      {
+          if (legalMove(board, move))
+          {
+            board[move] = human;
+            found = winner(board)==human;
+            board[move] = empty;
+          }
+        
+          ++move;
+      }
+   }
+  
+///////////////////////////////////////////
+  
+  //PICK THE BEST COMPUTER MOVE
+  if(!found)
+   {
+     move = 0;
+     int i = 0;
+    
+    const int bestMovesOrder[9] = { 4, 0, 2. 6, 8, 1, 3, 5, 7};
+     
+      while(!found && i < board.size())
+      {
+        move = bestMovesOrder[i];
+        if (legalMove(board, move))
+            found = true;
+        
+        ++i;
+      }
+   }
+///////////////////////////////////////////
+  
+  cout << "Computer has chosen square: " << move << endl;
+  return move;
 }
 
 void displayWinner(char winner, char comp, char user);
@@ -177,7 +234,4 @@ void displayWinner(char winner, char comp, char user);
     cout << winner << " win the game!\n Please play again\n\n";
   else 
     cout << "It's a tie! No one wins!\n Please play again\n\n";
-}
-
-
 }
