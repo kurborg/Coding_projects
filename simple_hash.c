@@ -2,53 +2,69 @@
 #include <stdio.h>
 #include<string.h>
 
+struct hashNode
+{
+    char token[100];   
+    struct hashNode* next;
+}
+
+int addNewToken(hashNode[26], char token[]);
+int asciiLetterValue(char c);
+void addTokenToHash(char fileWord[], char token[]);
+void loadFileStrings(hashNode[26], FILE* fptr);
+
+
+hashNode hashTable[26];
+
+
 int main()
 {
-
-    char* hashT[26][100];
-    char* inputs[100], temp[100];
-
+    //INITIALIZE TABLE TO NULL
     for (int i = 0; i < 26; i++)
     {
         for (int j = 0; j < 100; j++)
         {
-            hashT[i][j] = NULL;
+            hashTable[i] = NULL;
         }
     }
 
-    int i = 0;
+    //OPEN FILE AND MAKE SURE NO ERRORS
     FILE* fptr;
     fptr = fopen("C:\\wordhash.txt", "r");
-
     if (fptr == NULL)
     {
         printf("Error opening file!");
         exit(1);
     }
+    
 
-    while (fgets(temp, 80, fptr) != NULL)
+    while (fgets(temp, 100, fptr) != NULL)
     {
         char* inputs = (char*)malloc(sizeof(temp));
-        toUpper(inputs[i]);
+        toUpper(inputs[0]);
 
-        for (int m = 65; m < 91; m++)
+        for (int m = 'A'; m <= 'Z'; m++)
         {
             int k = 0, n = 0, i;
             if (inputs[0] == m)
             {
                 for (i = 0; i < 100; i++)
                 {
-                        while ((inputs[k] != '\0') && (hashT[m - 65][i] == NULL))
+                        if ((inputs[k] != '\0') && (hashT[m - 'A'][i] == NULL))
                         {
-                            hashT[m - 65][i] = inputs[k];
+                            hashT[m - 'A'][i] = inputs[k];
                             i++; k++;
                         }
                             
-                        If (hashT[m-65][99] != NULL)
+                        if (hashT[m - 'A'][99] != NULL)
+                        {
                             printf(“Token not added. Array with that hash is full\n\n”);
-
-                            hashT[m - 65][i + 1] = '\0';
+                            break;
                         }
+                    
+                        if(inputs[k] == '\0')
+                            hashT[m - 'A'][i + 1] = '\0';
+                        
                     }
                 }
 
@@ -63,9 +79,9 @@ int main()
                 if (hashT[i][j] != NULL)
                 {
                     if (hashT[i][j] != '\0')
-                        printf("Words with %c : %s", hashT[i], hashT[i][j]);
+                        printf("Words with %c: %s", hashT[i], hashT[i][j]);
                     else
-                        printf("\n");
+                        printf("\n             ");
                 }
             }
         }
@@ -87,3 +103,23 @@ int main()
         system("pause");
         return 0;
 }
+    
+    
+    
+    
+    //Calculates ASCII value of letter to match to right place in array
+    int asciiLetterValue(char c)
+    {
+        if(!isalpha(c))
+        {
+            printf("Not a letter!\n");
+            return -1;
+        }
+        
+        int value;
+        
+        value = toupper(c);
+        
+        return value - 'A';
+        
+    }
