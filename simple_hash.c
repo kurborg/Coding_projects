@@ -4,28 +4,19 @@
 
 struct hashNode
 {
-    char token[100];   
-    struct hashNode* next;
+    int len;
+    char* token[100];   
 }
 
-int addNewToken(hashNode[26], char token[]);
-int asciiLetterValue(char c);
-void addTokenToHash(char fileWord[], char token[]);
-void loadFileStrings(hashNode[26], FILE* fptr);
-
-
 hashNode hashTable[26];
-
 
 int main()
 {
     //INITIALIZE TABLE TO NULL
     for (int i = 0; i < 26; i++)
     {
-        for (int j = 0; j < 100; j++)
-        {
-            hashTable[i] = NULL;
-        }
+        hashTable[i].token = "";
+        hashTable[i].len = 0;
     }
 
     //OPEN FILE AND MAKE SURE NO ERRORS
@@ -37,89 +28,93 @@ int main()
         exit(1);
     }
     
-
-    while (fgets(temp, 100, fptr) != NULL)
+    
+    //CREATE BUFFER FOR FILE INPUT
+    char buff[100];
+    char ch;
+    int i = 0;
+    
+    
+    //IF CHAR FROM FILE IS EOF THEN BREAK
+    //IF CHAR FROM FILE IS END OF LINE ADD '\0' TO BUFFER, RESET BUFFER INDEX, THEN BREAK
+    //ELSE ADD THE CHAR TO THE BUFFER
+    while (1)
     {
-        char* inputs = (char*)malloc(sizeof(temp));
-        toUpper(inputs[0]);
-
-        for (int m = 'A'; m <= 'Z'; m++)
+        ch = fgetc(fptr);
+       
+        if (ch == EOF)
+               break;
+        
+        else if (ch == '\n')
         {
-            int k = 0, n = 0, i;
-            if (inputs[0] == m)
-            {
-                for (i = 0; i < 100; i++)
-                {
-                        if ((inputs[k] != '\0') && (hashT[m - 'A'][i] == NULL))
-                        {
-                            hashT[m - 'A'][i] = inputs[k];
-                            i++; k++;
-                        }
-                            
-                        if (hashT[m - 'A'][99] != NULL)
-                        {
-                            printf(“Token not added. Array with that hash is full\n\n”);
-                            break;
-                        }
-                    
-                        if(inputs[k] == '\0')
-                            hashT[m - 'A'][i + 1] = '\0';
-                        
-                    }
-                }
-
-        free(inputs);
+            buff[i] = '\0';
+            i = 0;
+            break;
+        }
+        
+        else 
+            buff[i++] = ch;
     }
     
+    //UPPERCASE THE FIRST ELEMENT OF BUFFER TO SIMPLIFY SORTING OF HASHTABLE
+    buff[0] = toupper(buff[0]);
+    //FIND ASCII VALUE OF THE FIRST ELEMENT FOR THE RIGHT ENTRY
+    int entry = buff[0] - 'A';
 
-        for (i = 0; i < 26; i++)
+    //IF ENTRY ISN'T FULL THEN ALLOCATE MEMORY FOR THE TOKEN 
+    //WHEN MEMORY IS ALLOCATED, ADD THE BUFFER TO THE TOKEN 
+    //ADD 1 TO THE TOKEN OF THE ENTRY
+    if(hashTable[entry].len < 100)
+    {
+        int* letters = hashTable[value].len;
+        hashTable[entry].token[letters] = malloc(strlen(buff) + 1);
+        
+        if(hashTable[entry].token[letters] != NULL)
         {
-            for (int j = 0; j < 100; j++)
-            {
-                if (hashT[i][j] != NULL)
-                {
-                    if (hashT[i][j] != '\0')
-                        printf("Words with %c: %s", hashT[i], hashT[i][j]);
-                    else
-                        printf("\n             ");
-                }
-            }
+            hashTable[entry].token[letters] =  hashTable[entry].token[letters] + buff;
+            hashTable[entry].len++;
         }
-
-        for (int i = 0; i < 26; i++)
-        {
-            for (int j = 0; j < 100; j++)
-            {
-                if (hashT[i][j] != NULL)
-                {
-                    free(hashT[i][j]);
-                }
-                
-            }
-        }
-
-        fclose(fptr);
-
-        system("pause");
-        return 0;
+    }
+    
+    //IF TOKENS FOR THE ENTRY IS FULL PRINT ERROR MESSAGE
+    else
+      printf("“The token %s could not be entered. The corresponding entry in the hash table is already full\n\n", buff);
+           
+    
+    
+        
+        
+    for(int m = 0 ; m < 26 ; m++ )
+     	{
+     		printf("The words that begin with %c : ", 'A'+ m );
+        
+   			for( int n = 0 ; n < hash[m].len ; n++)
+   			{
+        		printf("%s ",hash[m].token[n]);
+   			}
+   
+   			printf("\n\n");
+     	}
+    
+    //FREE ALLOCATED MEMORY FOR EACH TOKEN FOR EACH ENTRY
+	for(int m = 0 ; m < 26 ; m++ )
+	{
+   		for( int n = 0 ; n < hash[m].len ; n++)
+   		{
+       			free(hash[m].tokens[n]);
+   		}
+        
+    }
+    
+    
+    //CLOSE FILE ALWAYS
+    fclose(fptr);
+    
+    system("pause");
+    return 0;
 }
     
     
     
     
-    //Calculates ASCII value of letter to match to right place in array
-    int asciiLetterValue(char c)
-    {
-        if(!isalpha(c))
-        {
-            printf("Not a letter!\n");
-            return -1;
-        }
-        
-        int value;
-        
-        value = toupper(c);
-        
-        return value - 'A';
-        
-    }
+
