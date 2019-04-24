@@ -20,14 +20,14 @@ char* get_token(FILE *fp)
 
     fgets(token, WORD_SIZE, fp);
 
+    // reached end of file -->
     if (fgets(token, WORD_SIZE, fp) == NULL)
     {
-    // reached end of file -->
     return NULL
-	  }
+    }
 
-// Otherwise return token
-  printf("\nRaw token = %s",token);
+    // Otherwise return token
+    printf("\nRaw token = %s",token);
 }
 
 
