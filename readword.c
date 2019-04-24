@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdio.h>
 #define WORD_SIZE 50
 
 typedef enum {false  = 0, true = 1} boolean;
@@ -11,23 +12,21 @@ typedef enum {false  = 0, true = 1} boolean;
 // Your code MUST be able to handle consecutive whitespace characters
 // while extracting the tokens!
 
-char* get_token(FILE *fp)
+char* get_token(FILE* fp)
 {
     char* token = calloc(WORD_SIZE, sizeof(char));
-    int i = 0;
-    boolean eof_flag = false;
-    // true if end-of-file reached, false otherwise
 
     fgets(token, WORD_SIZE, fp);
 
     // reached end of file -->
     if (fgets(token, WORD_SIZE, fp) == NULL)
     {
-    return NULL
+    return NULL;
     }
 
     // Otherwise return token
     printf("\nRaw token = %s",token);
+    return token;
 }
 
 
@@ -35,17 +34,18 @@ int main(int argc, char *argv[])
 {
 
   FILE* fptr;
-  char filename[WORD_SIZE] = argv[1];
+  char* filename = argv[1];
 
-  fptr = fopen(filename, 'r');
+  fptr = fopen(filename, "r");
 
   int tokens_count = 0;
+  char* word = calloc(WORD_SIZE, sizeof(char));
 
-  while ((word = get_token(fp)) != NULL)
+  while ((word = get_token(fptr)) != NULL)
   {
       ++tokens_count;
 
-      printf("\nToken: %s", word);
+      printf("Token: %s", word);
 
       free(word);
   }
