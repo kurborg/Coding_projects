@@ -15,31 +15,35 @@ if(argc != 2)
 char input[] = argv[1];
 
 int len = string_length(input);
+int middle = len /2;
+int end = len - 1;
+  
 
-for(int n = 0, m = len; n != m; n++, m--)
+for(int i = 0; i < middle; i++)
 {
-  if(input[n] != input[m])
+  if(input[i] != input[end])
   {
     printf("%s is not a palindrome! \n\n", input);
-    return 1;
+    break;
   }
   
-  else 
-  {
+  end--; 
+  
+  if(i == middle)
     printf("%s is a palindrome! \n\n", input);
-    return 1;
-  }
   
  }
 
+  return 0;
 }
 
 size_t string_length(char word[])
 {
-  int counter = 0;
-
+  int counter = 0, i = 0;
+  
   while(word[i] != '\0')
   {
+    i++;
     ++counter;
   }
   
