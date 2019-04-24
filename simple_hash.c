@@ -1,6 +1,6 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include<string.h>
+#include<stdlib.h>
 
 struct hashNode
 {
@@ -9,8 +9,12 @@ struct hashNode
 };
 
 
-int main()
+int main(int argc, char* argv[])
 {
+
+	char* filename;
+	filename = argv[1];
+
 
 	struct hashNode hashTable[26];
 
@@ -22,10 +26,10 @@ int main()
 
 	//OPEN FILE AND MAKE SURE NO ERRORS
 	FILE* fptr;
-	fptr = fopen("wordhash.txt", "r");
+	fptr = fopen(filename, "r");
 	if (fptr == NULL)
 	{
-		printf("Error opening file!");
+		printf("\nError opening file!\n");
 		exit(1);
 	}
 
@@ -89,7 +93,7 @@ int main()
 
 		//IF TOKENS FOR THE ENTRY IS FULL PRINT ERROR MESSAGE
 		else
-			printf("“The token %s could not be entered. The corresponding entry in the hash table is already full\n\n", buff);
+			printf("The token %s could not be entered. The corresponding entry in the hash table is already full\n\n", buff);
 
 	}
 
@@ -124,10 +128,5 @@ int main()
 	//CLOSE FILE ALWAYS
 	fclose(fptr);
 
-	system("pause");
 	return 0;
 }
-    
-    
-    
-
