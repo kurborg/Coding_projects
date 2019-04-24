@@ -12,14 +12,14 @@ if(argc != 2)
   return -1;
 }
 
-char input[] = argv[1];
+char* input = argv[1];
 
 int len = string_length(input);
 int middle = len /2;
 int end = len - 1;
   
 
-for(int i = 0; i < middle; i++)
+for(int i = 0; i <= middle; i++)
 {
   if(input[i] != input[end])
   {
