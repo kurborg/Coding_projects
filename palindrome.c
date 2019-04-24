@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-size_t string_length(char word[]);
+int string_length(char* word);
 
 
 int main(int argc, char* argv[])
@@ -37,14 +37,14 @@ for(int i = 0; i < middle; i++)
   return 0;
 }
 
-size_t string_length(char word[])
+int string_length(char* word)
 {
-  int counter = 0, i = 0;
+  int counter = 0;
   
-  while(word[i] != '\0')
+  while(*word)
   {
-    i++;
-    ++counter;
+    counter++;
+    word++;
   }
   
   return counter;
