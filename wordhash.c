@@ -63,15 +63,38 @@ void insert_in_hash_table(struct hash_entry hash_table[], char *token)
 	// location in the hash table. Note that if there are duplicate tokens,
 	// then the linked list will have multiple entries corresponding to each
 	// occurrence of the duplicate token.
+	
+	int i1 = token[0] - 'A';
+	
+	struct node* new_entry= malloc(sizeof(node));
+	
+	if (new_entry == NULL)
+	{
+		printf("Error allocating memory!\n\n");
+		exit(1);
+	}
+	
+	
+	while(hashtable[i1].head->next != NULL)
+	{
+		hashtable[i1].head = hashtable[i1].head->next;
+	}
+	
+	hashtable[i1].head = new_entry;
+	
+   	for (int i = 0; token[i] != '\0'; i++)
+    	{
+        	new_entry.data[i] = token[i];
+    	}
+	new_entry.data[i] = '\0';
 
-	return;
 }
 
 void print_hash_table(struct hash_entry hash_table[]) 
 {
 	for (int i = 0;i < HASH_TABLE_SIZE;i++) 
 	{
-		printf("\n(%c, %d) :: \t",i + 65, (hash_table[i].head != NULL ? 			hash_table[i].count : 0));		
+		printf("\n(%c, %d) :: \t",i + 65, (hash_table[i].head != NULL ? hash_table[i].count : 0));		
 		// character value in A-Z range
 
 		// Now traverse linked list of hash_table[i]
@@ -93,15 +116,21 @@ void delete_hash_table(struct hash_entry hash_table[])
 		{
 			struct node *ptr = hash_table[i].head->next;
 			struct node *prev = hash_table[i].head;
-			do {
-				// YOUR CODE GOES HERE
-
-			} while (prev != NULL);
+			
+			while(1)
+			{
+				if (ptr != NULL);
+				{
+					prev = ptr;
+					ptr = ptr->next;
+					free(prev);
+				}
+				else
+					break;
+			}
 		}
 		hash_table[i].head = NULL;
 	}
-
-	return;
 }
 
 
@@ -126,8 +155,11 @@ int main(int argc, char *argv[]) {
 	while ((word = get_token(fp)) != NULL) 
 	{
 		// first convert token to upper case
+		word = toupper(word);
 		++raw_tokens_count;
 		// If word starts with a letter, then insert into hash table
+		if(word[0] >= 'A' || word[0] <= 'Z')
+		{
 			printf("\nToken to insert into hash table: %s", word);
 			insert_in_hash_table(hash_table, word);
 		} 
