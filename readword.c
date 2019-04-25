@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
   fptr = fopen(filename, "r");
 
   int tokens_count = 0;
-  char* word = calloc(WORD_SIZE, sizeof(char));
+  char* word;
 
   while ((word = get_token(fptr)) != NULL)
   {
