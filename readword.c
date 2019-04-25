@@ -30,7 +30,6 @@ char* get_token(FILE* fp)
 		else if (ch == '\n' || ch == ' ' || ch == '\t')
 		{
 			token[i] = '\0';
-			i = 0;
 			printf("\nRaw token = %s",token);
 			return token;
 			while((ch == ' ' || ch == '\n' || ch == '\t')&& (ch != EOF))
