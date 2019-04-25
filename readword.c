@@ -33,12 +33,14 @@ char* get_token(FILE* fp)
 			i = 0;
 			printf("\nRaw token = %s",token);
 			return token;
+			while((ch == ' ' || ch == '\n' || ch == '\t')&& (ch != EOF))
+				ch = fgetc(fp);
 			break;
 		}
 
 		else
 			token[i++] = ch;
-		}
+	}
 
     	if(fileStatus == 0) 
 		return NULL;
