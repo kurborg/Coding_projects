@@ -11,24 +11,43 @@
 
 char* get_token(FILE* fp)
 {
-    char* token = calloc(WORD_SIZE, sizeof(char));
+	char* token = calloc(WORD_SIZE, sizeof(char));
+	char ch;
+	int fileStatus, i = 0;
 
-    fgets(token, WORD_SIZE, fp);
+	while (1)
+	{
+		ch = fgetc(fp);
 
-    // reached end of file -->
-    if (fgets(token, WORD_SIZE, fp) == NULL)
-    {
-    return NULL;
-    }
+		if (ch == EOF)
+		{
+			fileStatus = 0;
+			break;
+		}
 
-    // Otherwise return token
-    printf("\nRaw token = %s",token);
-    return token;
+		else if (ch == '\n' || ch == ' ' || ch == '\t')
+		{
+			token[i] = '\0';
+			i = 0;
+			printf("\nRaw token = %s",token);
+			return token;
+			break;
+		}
+
+		else
+			token[i++] = ch;
+	}
+
+    	if(fileStatus == 0) 
+		return NULL;
+
 }
 
 
-void init_hash_table(struct hash_entry hash_table[]) {
-	for (int i = 0; i < HASH_TABLE_SIZE;i++) {
+void init_hash_table(struct hash_entry hash_table[]) 
+{
+	for (int i = 0; i < HASH_TABLE_SIZE;i++) 
+	{
 		hash_table[i].head = NULL;
 		hash_table[i].count = 0;
 	}
@@ -37,7 +56,8 @@ void init_hash_table(struct hash_entry hash_table[]) {
 }
 
 
-void insert_in_hash_table(struct hash_entry hash_table[], char *token) {
+void insert_in_hash_table(struct hash_entry hash_table[], char *token) 
+{
     // This function will insert a token into the correct location
 	// of the hash table. The token is inserted at the head of the correct
 	// location in the hash table. Note that if there are duplicate tokens,
@@ -47,12 +67,16 @@ void insert_in_hash_table(struct hash_entry hash_table[], char *token) {
 	return;
 }
 
-void print_hash_table(struct hash_entry hash_table[]) {
-	for (int i = 0;i < HASH_TABLE_SIZE;i++) {
-		printf("\n(%c, %d) :: \t",i + 65, (hash_table[i].head != NULL ? hash_table[i].count : 0));		// character value in A-Z range
+void print_hash_table(struct hash_entry hash_table[]) 
+{
+	for (int i = 0;i < HASH_TABLE_SIZE;i++) 
+	{
+		printf("\n(%c, %d) :: \t",i + 65, (hash_table[i].head != NULL ? 			hash_table[i].count : 0));		
+		// character value in A-Z range
 
 		// Now traverse linked list of hash_table[i]
-		while (ptr != NULL) {
+		while (ptr != NULL) 
+		{
 			printf("%s --> ",ptr->data);
 		}
 		printf("NULL\n");
@@ -61,9 +85,12 @@ void print_hash_table(struct hash_entry hash_table[]) {
 	return;
 }
 
-void delete_hash_table(struct hash_entry hash_table[]) {
-	for (int i = 0; i < HASH_TABLE_SIZE; i++) {
-		if (hash_table[i].head != NULL) {
+void delete_hash_table(struct hash_entry hash_table[]) 
+{
+	for (int i = 0; i < HASH_TABLE_SIZE; i++) 
+	{
+		if (hash_table[i].head != NULL) 
+		{
 			struct node *ptr = hash_table[i].head->next;
 			struct node *prev = hash_table[i].head;
 			do {
@@ -85,8 +112,10 @@ int main(int argc, char *argv[]) {
 	init_hash_table(hash_table);
 
 	FILE *fp = NULL;
-	if (argc > 1) {
-		if ((fp = fopen(argv[1],"r")) == NULL) {
+	if (argc > 1) 
+	{
+		if ((fp = fopen(argv[1],"r")) == NULL) 
+		{
 			fprintf(stderr,"\nError in opening file %s. Exiting...\n",argv[1]);
 			exit(EXIT_FAILURE);
 		}
@@ -94,15 +123,17 @@ int main(int argc, char *argv[]) {
 
 	int tokens_count = 0, raw_tokens_count = 0;
 
-	while ((word = get_token(fp)) != NULL) {
+	while ((word = get_token(fp)) != NULL) 
+	{
 		// first convert token to upper case
 		++raw_tokens_count;
 		// If word starts with a letter, then insert into hash table
 			printf("\nToken to insert into hash table: %s", word);
 			insert_in_hash_table(hash_table, word);
-		} else {		// otherwise discard the raw token
+		} 
+		
+		else 		// otherwise discard the raw token
 			free(word);
-		}
 	}
 
 	print_hash_table(hash_table);
