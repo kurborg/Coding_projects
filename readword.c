@@ -31,10 +31,10 @@ char* get_token(FILE* fp)
 		{
 			token[i] = '\0';
 			printf("\nRaw token = %s",token);
-			return token;
+			
 			while((ch == ' ' || ch == '\n' || ch == '\t')&& (ch != EOF))
 				ch = fgetc(fp);
-			break;
+			return token;
 		}
 
 		else
