@@ -1,6 +1,6 @@
 /*
-******************************************************************
-*   Compile using: gcc -g -Wall -std=gnu99 wordhash.c -o wordhash
+*****************************************************************
+Compile using: gcc -g -Wall -std=gnu99 wordhash.c -o wordhash
 ******************************************************************
 */
 
@@ -28,10 +28,8 @@ char* get_token(FILE* fp)
 		else if (ch == '\n' || ch == ' ' || ch == '\t')
 		{
 			token[i] = '\0';
-			i = 0;
 			printf("\nRaw token = %s",token);
 			return token;
-			break;
 		}
 
 		else
@@ -65,8 +63,9 @@ void insert_in_hash_table(struct hash_entry hash_table[], char *token)
 	// occurrence of the duplicate token.
 	
 	int i1 = token[0] - 'A';
+	int i = 0;
 	
-	struct node* new_entry= malloc(sizeof(node));
+	struct node* new_entry= malloc(sizeof(struct node*));
 	
 	if (new_entry == NULL)
 	{
@@ -75,18 +74,19 @@ void insert_in_hash_table(struct hash_entry hash_table[], char *token)
 	}
 	
 	
-	while(hashtable[i1].head->next != NULL)
+	while(hash_table[i1].head->next != NULL)
 	{
-		hashtable[i1].head = hashtable[i1].head->next;
+		hash_table[i1].head = hash_table[i1].head->next;
 	}
 	
-	hashtable[i1].head = new_entry;
+	hash_table[i1].head = new_entry;
 	
-   	for (int i = 0; token[i] != '\0'; i++)
+        while(token[i] != '\0')
     	{
-        	new_entry.data[i] = token[i];
+        	new_entry->data[i] = token[i];
+            i++;
     	}
-	new_entry.data[i] = '\0';
+	new_entry->data[i] = '\0';
 
 }
 
@@ -96,7 +96,7 @@ void print_hash_table(struct hash_entry hash_table[])
 	{
 		printf("\n(%c, %d) :: \t",i + 65, (hash_table[i].head != NULL ? hash_table[i].count : 0));		
 		// character value in A-Z range
-
+        struct node *ptr = hash_table[i].head;
 		// Now traverse linked list of hash_table[i]
 		while (ptr != NULL) 
 		{
@@ -119,13 +119,14 @@ void delete_hash_table(struct hash_entry hash_table[])
 			
 			while(1)
 			{
-				if (ptr != NULL);
+				if(ptr != NULL);
 				{
 					prev = ptr;
 					ptr = ptr->next;
 					free(prev);
 				}
-				else
+				
+				if(ptr == NULL)
 					break;
 			}
 		}
@@ -150,12 +151,16 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	int tokens_count = 0, raw_tokens_count = 0;
+	int tokens_count = 0, raw_tokens_count = 0, i = 0;
 
 	while ((word = get_token(fp)) != NULL) 
 	{
 		// first convert token to upper case
-		word = toupper(word);
+        while(word[i]!='\0')
+        {
+            word[i] = toupper(word[i]);
+            i++;
+        }
 		++raw_tokens_count;
 		// If word starts with a letter, then insert into hash table
 		if(word[0] >= 'A' || word[0] <= 'Z')
