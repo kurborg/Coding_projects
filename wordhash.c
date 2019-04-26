@@ -14,31 +14,36 @@ char* get_token(FILE* fp)
 	char* token = calloc(WORD_SIZE, sizeof(char));
 	char ch;
 	int fileStatus, i = 0;
-
-	while (1)
+    int eof_flag = 1, whitespace_flag = 0;
+	
+	while((ch = fgetc(fp))!= EOF)
 	{
-		ch = fgetc(fp);
-
-		if (ch == EOF)
+		eof_flag = 0;
+		
+	
+		if(ch == '\n' || ch == ' ' || ch == '\t')
 		{
-			fileStatus = 0;
-			break;
+            whitespace_flag = 1;
 		}
-
-		else if (ch == '\n' || ch == ' ' || ch == '\t')
-		{
-			token[i] = '\0';
-			printf("\nRaw token = %s",token);
-			return token;
-        }
-
-		else
+		
+		else if(!whitespace_flag)
 			token[i++] = ch;
+
+		else 
+        {
+            ungetc(ch, fp);
+            break;
+        }
 	}
-
-    	if(fileStatus == 0) 
+	
+    if (!eof_flag)
+		{
+            token[i] = '\0';
+            printf("\nRaw token: %s" , token);
+			return token;
+		}
+	else
 		return NULL;
-
 }
 
 
@@ -62,32 +67,23 @@ void insert_in_hash_table(struct hash_entry hash_table[], char *token)
 	// then the linked list will have multiple entries corresponding to each
 	// occurrence of the duplicate token.
 	
-	int i1 = token[0] - 'A';
-	int i = 0;
+	int row = token[0] - 65;
+    
+    
 	
-	struct node* new_entry= malloc(sizeof(struct node*));
+	struct node* new_node = malloc(sizeof(struct node));
 	
-	if (new_entry == NULL)
+	if (new_node == NULL)
 	{
 		printf("Error allocating memory!\n\n");
 		exit(1);
 	}
 	
-	
-	while(hash_table[i1].head->next != NULL)
-	{
-		hash_table[i1].head = hash_table[i1].head->next;
-	}
-	
-	hash_table[i1].head = new_entry;
-	
-        while(token[i] != '\0')
-    	{
-        	new_entry->data[i] = token[i];
-            i++;
-    	}
-	new_entry->data[i] = '\0';
-
+	new_node->data = token;
+	new_node->next = hash_table[row].head;
+    
+    hash_table[row].head = new_node;
+    hash_table[row].count++;
 }
 
 void print_hash_table(struct hash_entry hash_table[]) 
@@ -96,11 +92,12 @@ void print_hash_table(struct hash_entry hash_table[])
 	{
 		printf("\n(%c, %d) :: \t",i + 65, (hash_table[i].head != NULL ? hash_table[i].count : 0));		
 		// character value in A-Z range
-        struct node *ptr = hash_table[i].head;
+        struct node* ptr = hash_table[i].head;
 		// Now traverse linked list of hash_table[i]
 		while (ptr != NULL) 
 		{
 			printf("%s --> ",ptr->data);
+            ptr = ptr->next;
 		}
 		printf("NULL\n");
 	}
@@ -154,16 +151,17 @@ int main(int argc, char *argv[]) {
 
 	while ((word = get_token(fp)) != NULL) 
 	{
-		// first convert token to upper case
-        while(word[i]!='\0')
-        {
+        int i;
+        int len = strlen(word);
+    
+        for(i = 0; i < len; i++)
             word[i] = toupper(word[i]);
-            i++;
-        }
+    
 		++raw_tokens_count;
 		// If word starts with a letter, then insert into hash table
-		if(word[0] >= 'A' || word[0] <= 'Z')
+		if(word[0] >= 'a' || word[0] <= 'Z')
 		{
+            ++tokens_count;
 			printf("\nToken to insert into hash table: %s", word);
 			insert_in_hash_table(hash_table, word);
 		} 
@@ -175,6 +173,8 @@ int main(int argc, char *argv[]) {
 	print_hash_table(hash_table);
 	printf("\nTotal raw tokens found = %d\n", raw_tokens_count);
 	printf("\nTotal tokens inserted into hash table = %d\n", tokens_count);
+    
+    delete_hash_table(hash_table);
 
 	return 0;
 }
