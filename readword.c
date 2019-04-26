@@ -9,35 +9,35 @@ char* get_token(FILE* fp)
 	char* token = calloc(WORD_SIZE, sizeof(char));
 	char ch;
 	int fileStatus, i = 0;
+    int eof_flag = 1, whitespace_flag = 0;
 	
-	while(1)
+	while((ch = fgetc(fp))!= EOF)
 	{
-		ch = fgetc(fp);
-		if (ch == EOF)
-		{
-			fileStatus = 0;
-			break;
-		}
+		eof_flag = 0;
 		
 	
-		else if (ch == '\n' || ch == ' ' || ch == '\t')
+		if(ch == '\n' || ch == ' ' || ch == '\t')
 		{
-			token [i] = '\0';
-			printf("\nRaw token: %s" , token);
-			
-			while (ch == ' ' || ch == '\n' || ch == '\t')
-            {
-				ch = fgetc(fp);
-                    
-            }
-                return token;
+            whitespace_flag = 1;
 		}
+		
+		else if(!whitespace_flag)
+			token[i++] = ch;
 
 		else 
-			token[i++] = ch;
+        {
+            ungetc(ch, fp);
+            break;
+        }
 	}
-
-	if (fileStatus == 0)
+	
+    if (!eof_flag)
+		{
+            token[i] = '\0';
+            printf("\nRaw token: %s" , token);
+			return token;
+		}
+	else
 		return NULL;
 }
 
