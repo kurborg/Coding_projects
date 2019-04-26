@@ -4,72 +4,66 @@
 #include <stdio.h>
 #define WORD_SIZE 50
 
-
-// This function will extract tokens from file - one word at a time
-// A word is defined by a sequence of non-whitespace characters surrounded
-// on both sides by one or more whitespace characters
-// Your code MUST be able to handle consecutive whitespace characters
-// while extracting the tokens!
-
 char* get_token(FILE* fp)
 {
 	char* token = calloc(WORD_SIZE, sizeof(char));
 	char ch;
 	int fileStatus, i = 0;
-
-	while (1)
+	
+	while(1)
 	{
 		ch = fgetc(fp);
-
 		if (ch == EOF)
 		{
 			fileStatus = 0;
 			break;
 		}
-
+		
+	
 		else if (ch == '\n' || ch == ' ' || ch == '\t')
 		{
-			token[i] = '\0';
-			printf("\nRaw token = %s",token);
+			token [i] = '\0';
+			printf("\nRaw token: %s" , token);
 			
-			while((ch == ' ' || ch == '\n' || ch == '\t')&& (ch != EOF))
+			while (ch == ' ' || ch == '\n' || ch == '\t')
+            {
 				ch = fgetc(fp);
-			return token;
+                    
+            }
+                return token;
 		}
 
-		else
+		else 
 			token[i++] = ch;
 	}
 
-    	if(fileStatus == 0) 
+	if (fileStatus == 0)
 		return NULL;
-  
 }
 
 
-int main(int argc, char *argv[]) 
+int main(int argc, char* argv[])
 {
 
-  FILE* fptr;
-  char* filename = argv[1];
+FILE* fptr;
+char* filename = argv[1];
 
-  fptr = fopen(filename, "r");
+fptr = fopen(filename, "r");
 
-  int tokens_count = 0;
-  char* word;
+int tokens_count = 0;
 
-  while ((word = get_token(fptr)) != NULL)
-  {
-      ++tokens_count;
+char* word;
 
-      printf("\nToken: %s", word);
+while((word = get_token(fptr))!= NULL)
+{
+	++tokens_count;
 
-      free(word);
-  }
-
-  printf("\nTotal tokens found = %d\n", tokens_count);
-  
-
-  return 0;
-
+	printf("\nToken: %s", word);
+	free(word);
 }
+
+printf("\n\nTotal number of tokens: %d\n", tokens_count);
+
+return 0;
+}
+
