@@ -30,7 +30,7 @@ char* get_token(FILE* fp)
 			token[i] = '\0';
 			printf("\nRaw token = %s",token);
 			return token;
-		}
+        }
 
 		else
 			token[i++] = ch;
@@ -119,14 +119,13 @@ void delete_hash_table(struct hash_entry hash_table[])
 			
 			while(1)
 			{
-				if(ptr != NULL);
-				{
-					prev = ptr;
+				if(ptr != NULL)
+                {   prev = ptr;
 					ptr = ptr->next;
 					free(prev);
 				}
 				
-				if(ptr == NULL)
+				else
 					break;
 			}
 		}
