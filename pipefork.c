@@ -21,15 +21,18 @@ int main(int argc, char* argv[])
   pipe(numArgs);
   
   pid_t children[numArgs];
+	
   
   
   for(int i = 0; i <argc; i++)
   {
+    children[i] = fork();
     
     if(children[i] == 0)
 	{
-		close (pipes[i]);
-		int input_fd = open(argv[i+1], O_RDONLY);
+		close(pipes[i]);
+	    	dup2(pipe_ends[1], 1);
+		execlp(argv[i+1], "ls", "-l", NULL);
 		char buffer;
 		int read_status = 1;
 		int write_status = 1;
@@ -64,19 +67,23 @@ int main(int argc, char* argv[])
   
   }
   
-  
-  for(int i = 0; i <numArgs; i++)
-    close(pipes[i]);
+int wait_status[numArgs];
+	
+	
+for(int i = 0; i <numArgs; i++)
+{
+	
+	if(children[i] > 0)
+	{
+		close(pipes[i]);
 
-	//For the sake of this example, the wait status of the children is not checked.
-	int wait_status[numArgs];
-  for(int i = 0; i <numArgs; i++)
-  {
-	  waitpid(child[i], &wait_status[i], 0);
-	  printf("Child %d has been collected.\n\n" , i+1);
-  }
-  
-    printf("All children have been collected. Program exiting\n\n");
-	  return EXIT_SUCCESS;
-  
-  }
+		waitpid(child[i], &wait_status[i], 0);
+		printf("Child %d has been collected.\n\n" , i+1);
+
+	}
+}	
+    
+printf("All children have been collected. Program exiting\n\n");
+return EXIT_SUCCESS;
+
+}
