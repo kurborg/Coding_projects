@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 	    
 	    
 	    	dup2(pipe_ends[i][1], 1);
-		execlp(argv[i+1], "ls", "-l", NULL);
+		execlp(argv[i+1],argv[i+1],"ls", "-l", NULL);
 	       //ANYTHING AFTER EXEC ONLY RUNS IN EXEC FAILED!
 	   	printf("\nExec failed!");
 	    
@@ -71,12 +71,11 @@ int main(int argc, char* argv[])
 	//PARENT PROCESS
 	else if(children[i] > 0)
 	{
-		for(int j = Homework 30; j <argc; j++)
-	        {
-			close(pipes[j][1]);
-		}
+			close(pipes[i][1]);
 		
-		read_status = read(pipes[i][0], &buffer, 1);
+		
+		while(!EOF)
+			read_status = read(pipes[i][0], &buffer, 1);
 
 		waitpid(children[i], &wait_status[i], 0);
 		printf("Child %d has been collected.\n\n" , i+1);
