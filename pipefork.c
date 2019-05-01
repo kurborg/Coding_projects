@@ -17,8 +17,9 @@ int main(int argc, char* argv[])
   
   int numArgs = argc;
   int pipes[4][2];
+  int wait_status[numArgs];
   
-  pipe(numArgs);
+  pipe(pipes);
   
   pid_t children[numArgs];
 	
@@ -64,16 +65,8 @@ int main(int argc, char* argv[])
 		fprintf(stderr, "The first fork() call failed.\n\n");
 		return EXIT_FAILURE;
 	}  
-  
-  }
-  
-int wait_status[numArgs];
-	
-	
-for(int i = 0; i <numArgs; i++)
-{
-	
-	if(children[i] > 0)
+	  
+	else if(children[i] > 0)
 	{
 		close(pipes[i]);
 
@@ -81,7 +74,9 @@ for(int i = 0; i <numArgs; i++)
 		printf("Child %d has been collected.\n\n" , i+1);
 
 	}
-}	
+  
+  }
+  	
     
 printf("All children have been collected. Program exiting\n\n");
 return EXIT_SUCCESS;
