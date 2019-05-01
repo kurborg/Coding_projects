@@ -9,7 +9,7 @@
 int main(int argc, char* argv[])
 {
 
-  if(argc < 1 || argc >4)
+  if(argc < 1 || argc > 5)
   {
     printf("ERROR: Incorrect number of file arguments!\n");
     exit(1);
@@ -31,8 +31,15 @@ int main(int argc, char* argv[])
     
     if(children[i] == 0)
 	{
-		close(pipes[i]);
-	    	dup2(pipe_ends[1], 1);
+	     for(int j = 0; j <argc; j++)
+	     {
+		if (i == j)
+		   break;
+		     
+		close(pipes[j][0]);
+		close(pipes[j][1]);
+	     }
+	    	dup2(pipe_ends[i], 1);
 		execlp(argv[i+1], "ls", "-l", NULL);
 		char buffer;
 		int read_status = 1;
@@ -68,7 +75,10 @@ int main(int argc, char* argv[])
 	  
 	else if(children[i] > 0)
 	{
-		close(pipes[i]);
+		for(int j = 0; j <argc; j++)
+	        {
+			close(pipes[j][1]);
+		}
 
 		waitpid(child[i], &wait_status[i], 0);
 		printf("Child %d has been collected.\n\n" , i+1);
