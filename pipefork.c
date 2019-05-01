@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 	     }
 	    
 	    
-	    	dup2(pipe_ends[i], 1);
+	    	dup2(pipe_ends[i][1], 1);
 		execlp(argv[i+1], "ls", "-l", NULL);
 	       //ANYTHING AFTER EXEC ONLY RUNS IN EXEC FAILED!
 	   	printf("\nExec failed!");
