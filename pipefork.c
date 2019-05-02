@@ -9,7 +9,7 @@
 int main(int argc, char* argv[])
 {
 
-  if(argc < 1 || argc > 5)
+  if(argc < 2 || argc > 5)
   {
     printf("ERROR: Incorrect number of file arguments!\n");
     exit(1);
@@ -17,8 +17,9 @@ int main(int argc, char* argv[])
   
   int pipes[4][2];
   int wait_status[argc];
-  int write_status = 1;
-  int read_status = 1;
+  int write_status[argc] = 1;
+  int read_status[argc] = 1;
+  char buffer;
   
   pipe(pipes);
   
@@ -45,37 +46,37 @@ int main(int argc, char* argv[])
 	     }
 	    
 	    
-	    	dup2(pipe_ends[i][1], 1);
+	    	dup2(pipes[i][1], 1);
 		execlp(argv[i+1],argv[i+1],"ls", "-l", NULL);
 	       //ANYTHING AFTER EXEC ONLY RUNS IN EXEC FAILED!
 	   	printf("\nExec failed!");
-	    
-	    
-		char buffer;
-
-		while(write_status > 0)
-		{
-			write_status = write(pipes[i][1], &buffer, 1);
-
-			if(write_status < 0)
-			{
-				fprintf(stderr, "One of the write() calls failed.\n\n");
-				return EXIT_FAILURE;
-			}
-		}
-
-		printf("child %d has finished passing the input file into the pipe.\n\n", i+1);
-		return EXIT_SUCCESS;
+	
 	}
 	  
 	//PARENT PROCESS
 	else if(children[i] > 0)
 	{
-			close(pipes[i][1]);
+		close(pipes[i][1]);
+		
+		while(read_status[i] > 0)
+		{
+			read_status[i] = read(pipes[i][0], &buffer, 1);
+			write_status[i] = write(1, &buffer, 1);
+
+			if(write_status[i] < 0)
+			{
+				fprintf(stderr, "write() call %d failed.\n\n", i+1);
+				return EXIT_FAILURE;
+			}
+		}
+		
+		if(read_status[i] < 0)
+		{
+			fprintf(stderr, "read() call %d failed.\n\n", i+1);
+			return EXIT_FAILURE;
+		}
 		
 		
-		while(!EOF)
-			read_status = read(pipes[i][0], &buffer, 1);
 
 		waitpid(children[i], &wait_status[i], 0);
 		printf("Child %d has been collected.\n\n" , i+1);
@@ -86,7 +87,7 @@ int main(int argc, char* argv[])
 	//FORK() ERROR
 	else if(children[i] < 0)
 	{
-		fprintf(stderr, "The first fork() call failed.\n\n");
+		fprintf(stderr, "fork() %d call failed.\n\n", i+1);
 		return EXIT_FAILURE;
 	}  
 	  
