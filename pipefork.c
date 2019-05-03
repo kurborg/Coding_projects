@@ -16,25 +16,27 @@ int main(int argc, char* argv[])
   }
 
   int pipes[4][2];
-  int wait_status[argc];
-  int write_status[argc] = 1;
-  int read_status[argc] = 1;
+  int numArgs = argc -1;
+  int wait_status[numArgs];
+  int write_status = 1;
+  int read_status = 1;
   char buffer;
 
-  pipe(pipes);
+  for(int k = 0; k < numArgs; k++)
+  	pipe(pipes[k][2]);
 
   pid_t children[numArgs];
 
 
 
-  for(int i = 0; i <argc; i++)
+  for(int i = 0; i <numArgs; i++)
   {
     children[i] = fork();
 
     //CHILD PROCESSES
     if(children[i] == 0)
 	{
-	     for(int j = 0; j <argc; j++)
+	     for(int j = 0; j <numArgs; j++)
 	     {
 		if (i == j)
 		   close(pipes[j][0]);
@@ -47,9 +49,9 @@ int main(int argc, char* argv[])
 
 
         dup2(pipes[i][1], 1);
-		execlp("ls", "ls", "-l", argv[i+1], NULL);
-	       //ANYTHING AFTER EXEC ONLY RUNS IN EXEC FAILED!
-	   	printf("\nExec failed!");
+	execlp("ls", "ls", "-l", argv[i+1], NULL);
+	//ANYTHING AFTER EXEC ONLY RUNS IN EXEC FAILED!
+	printf("\nExec failed!");
 
 	}
 
@@ -58,19 +60,19 @@ int main(int argc, char* argv[])
 	{
 		close(pipes[i][1]);
 
-		while(read_status[i] > 0)
+		while(read_status > 0)
 		{
-			read_status[i] = read(pipes[i][0], &buffer, 1);
-			write_status[i] = write(1, &buffer, 1);
+			read_status = read(pipes[i][0], &buffer, 1);
+			write_status = write(1, &buffer, 1);
 
-			if(write_status[i] < 0)
+			if(write_status < 0)
 			{
 				fprintf(stderr, "write() call %d failed.\n\n", i+1);
 				return EXIT_FAILURE;
 			}
 		}
 
-		if(read_status[i] < 0)
+		if(read_status < 0)
 		{
 			fprintf(stderr, "read() call %d failed.\n\n", i+1);
 			return EXIT_FAILURE;
@@ -99,11 +101,3 @@ printf("All children have been collected. Program exiting\n\n");
 return EXIT_SUCCESS;
 
 }
-
-
-
-/*
-NOTES FROM CLASS
-for (int i = 0; i < argc; i++)
-	close(pipe[i][1];
-*/
