@@ -22,8 +22,8 @@ int main(int argc, char* argv[])
   int read_status = 1;
   char buffer;
 
-  for(int k = 0; k < numArgs; k++)
-  	pipe(pipes[k][2]);
+  for(int i = 0; i < numArgs; i++)
+  	pipe(pipes[i]);
 
   pid_t children[numArgs];
 
